@@ -163,7 +163,7 @@ def getChangedItems(fitTrackedData, trackedItems=None, paths=None, pathArgs=None
 
     if paths != None:
         if len(paths) == 0:
-            return ({}, set(), set(), set(), set(), {})
+            return ({}, set(), set(), set(), set(), {}, set())
         expectedItems &= paths
         trackedItems &= paths
 
