@@ -157,6 +157,48 @@ This would allow all the jar files in the directory to be ignored by fit and com
 the normal git commit flow if desired, and fit will not complain about these items even though
 they are binary.
 
+INITIAL CHECKOUT
+
+1. git clone
+    - does the usual
+    - (also gets .gitattributes with the tracked files)
+2. configure git-fit store:
+    git config fit.datastore.moduleName localstore
+    git config fit.datastore.modulePath ~/.mystore
+3. git-fit
+    - initializes git-fit
+    - if there's a .fit file:initialize the fit
+    - creates dummy files if it cannot connect to the store
+3. git-fit get
+    - download the needed files from the store
+
+CHANGING/ADDING/REMOVING BINARY FILES
+
+1. create a binary file
+2. git-fit save
+    - adds all changed, removed or added files that are included to .fit file
+    - stages .fit file for commit
+3. git commit
+    - the changes in fit
+    - NOTE: refuses to commit added binary files unless git-fit is told to allow it!
+4. git-fit put
+    - saves changes to the store
+5. git push
+    - pushes the .fit file (and whatever else you added to the commit) to the repository
+    - TODO: fails if changes weren't saved to store?
+
+PULLING CHANGES
+1. git pull
+    - the usual
+2. if conflicts
+    - git-fit will try to automerge conflicts in the .fit file
+    - if .fit file cannot be merged: see git-fit --merge-help
+3. if conflicts git-fit save
+    - after adapting .fit file
+
+SWITCHING BRANCHES
+- behaves as expected, might have to do a git-fit get
+
 -----------
 * Note about existing git hooks in your repo:
 If you already have any of the these hooks doing other things, setup might be a little less
