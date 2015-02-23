@@ -23,7 +23,9 @@ class Store(DataStore):
     def get(self, key, dst, size):
         #print "get(%s, %s)" % (key, dst)
 
-        return popen(['rsync', '--progress', key, dst]).wait() == 0
+        reporting = "--progress" if size > SHOW_PROGRESS_LIMIT else "--quiet"
+
+        return popen(['rsync', reporting, key, dst]).wait() == 0
 
     def put(self, src, dst, size):
         #print "put(%s, %s)" % (src, dst)
@@ -37,7 +39,7 @@ class Store(DataStore):
         return (
             popen(['mkdir', '-p', os.path.dirname(tmpfile)]).wait() == 0
         and popen(['cp', src, tmpfile]).wait() == 0
-        and popen(['rsync', '--progress', '--relative', dst, self.location], cwd=self.dir).wait() == 0
+        and popen(['rsync', reporting, '--relative', dst, self.location], cwd=self.dir).wait() == 0
         )
 
     def check(self, key):
