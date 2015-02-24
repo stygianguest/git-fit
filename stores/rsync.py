@@ -21,15 +21,14 @@ class Store(DataStore):
             print "Failed to remove temporary folder %s" % self.dir
 
     def get(self, key, dst, size):
-        #print "get(%s, %s)" % (key, dst)
-
         reporting = "--progress" if size > SHOW_PROGRESS_LIMIT else "--quiet"
 
-        return popen(['rsync', reporting, key, dst]).wait() == 0
+        # the cygwin rsync requires unix filenames for dst, but we have windows
+        # therefore we just work in the directory and only use the filename
+        dst_dir, dst_file = os.path.split(dst)
+        return popen(['rsync', reporting, key, dst_file], cwd=dst_dir).wait() == 0
 
     def put(self, src, dst, size):
-        #print "put(%s, %s)" % (src, dst)
-
         # copy the file in the temporary directory and execute rsync there
         # this way, we can create the necessary directories using rsync -R
         tmpfile = os.path.join(self.dir, dst)
