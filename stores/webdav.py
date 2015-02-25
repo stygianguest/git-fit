@@ -8,7 +8,8 @@ class Store(fitlib.DataStore):
 
     def __init__(self, *args, **kwds):
         self.location = popen('git config fit.datastore.location'.split(), stdout=PIPE).communicate()[0].strip()
-        self.port = int(popen('git config fit.datastore.port'.split(), stdout=PIPE).communicate()[0].strip())
+        self.path = popen('git config fit.datastore.path'.split(), stdout=PIPE).communicate()[0].strip()
+        self.port = int(popen('git config fit.datastore.port'.split(), stdout=PIPE).communicate()[0].strip() or 80)
 
         self._connection = None
 
@@ -20,6 +21,7 @@ class Store(fitlib.DataStore):
             self.connection = easywebdav.connect(
                 self.location,
                 port=self.port,
+                path=self.path,
             )
 
         return self.connection
