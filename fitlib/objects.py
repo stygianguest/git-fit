@@ -16,9 +16,11 @@ def getDataStore(progressCallback):
     if not moduleName:
         raise Exception('error: No external data store is configured. Check the fit.datastore keys in git config.')
 
+    import sys
     if modulePath:
-        import sys
         sys.path.append(modulePath)
+    else:
+        sys.path.append(joinpath(dirname(__file__), "..", "stores"))
 
     try:
         from importlib import import_module
