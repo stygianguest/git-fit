@@ -154,7 +154,7 @@ def _get(items, store, pp, successes, failures):
             transferred = False
         if key and transferred:
             pp.updateProgress(size, size)
-            popen(['mv', tempTransferFile, filePath]).wait()
+            move(tempTransferFile, filePath)
             successes.append((filePath, objHash, size))
         else:
             pp.updateProgress(size, size, custom_item_string='ERROR')
