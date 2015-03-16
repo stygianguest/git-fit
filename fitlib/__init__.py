@@ -263,18 +263,14 @@ def getFitFileStatus():
 
 @gitDirOperation(repoDir)
 def filterBinaryFiles(files):
-    binaryFiles = []
+    p = popen(['git', 'grep','-I', '--name-only', '-e', "."] + files, stdout=PIPE)
+    output = p.communicate()[0].strip()
+    asciiFiles = output.split('\n')
 
-    p = popen('file -f -'.split(), stdout=PIPE, stdin=PIPE)
-    fileTypes = p.communicate('\n'.join(files))[0].strip().split('\n')
+    binFiles = set(files)
+    binFiles.difference_update(asciiFiles)
 
-    for f in fileTypes:
-        sepIdx = f.find(':')
-        filepath = f[:sepIdx]
-        if f.find('text', sepIdx) < 0:
-            binaryFiles.append(filepath)
-
-    return binaryFiles
+    return binFiles
 
 class DataStore:
     def __init__(self, progress):
